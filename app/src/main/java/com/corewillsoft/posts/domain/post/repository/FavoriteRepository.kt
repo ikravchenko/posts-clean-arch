@@ -3,7 +3,7 @@ package com.corewillsoft.posts.domain.post.repository
 import io.reactivex.Completable
 import io.reactivex.Single
 
-interface FavoritesRepository {
+interface FavoriteRepository {
 
     val favoritePostIds: Single<Set<Int>>
 

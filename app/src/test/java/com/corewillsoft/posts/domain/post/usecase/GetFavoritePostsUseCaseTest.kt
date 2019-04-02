@@ -1,7 +1,7 @@
 package com.corewillsoft.posts.domain.post.usecase
 
 import com.corewillsoft.posts.domain.post.model.Post
-import com.corewillsoft.posts.domain.post.repository.FavoritesRepository
+import com.corewillsoft.posts.domain.post.repository.FavoriteRepository
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
@@ -15,7 +15,7 @@ class GetFavoritePostsUseCaseTest : StringSpec() {
     init {
         "gets empty favorite posts if there are no favorites" {
 
-            val favoritesRepository = mock<FavoritesRepository> {
+            val favoritesRepository = mock<FavoriteRepository> {
                 on { favoritePostIds } doReturn Single.just(emptySet())
             }
             val getAllPostsUseCase = mock<GetAllPostsUseCase> {
@@ -23,7 +23,7 @@ class GetFavoritePostsUseCaseTest : StringSpec() {
             }
             GetFavoritePostsUseCase(
                 getAllPostsUseCase = getAllPostsUseCase,
-                favoritesRepository = favoritesRepository
+                favoriteRepository = favoritesRepository
             ).execute(GetFavoritePostsUseCase.InParams(userId = 1))
                 .test()
                 .assertNoErrors()
@@ -36,7 +36,7 @@ class GetFavoritePostsUseCaseTest : StringSpec() {
 
         "gets favorite posts if there are saved favorites" {
 
-            val favoritesRepository = mock<FavoritesRepository> {
+            val favoritesRepository = mock<FavoriteRepository> {
                 on { favoritePostIds } doReturn Single.just(setOf(1))
             }
             val getAllPostsUseCase = mock<GetAllPostsUseCase> {
@@ -49,7 +49,7 @@ class GetFavoritePostsUseCaseTest : StringSpec() {
             }
             GetFavoritePostsUseCase(
                 getAllPostsUseCase = getAllPostsUseCase,
-                favoritesRepository = favoritesRepository
+                favoriteRepository = favoritesRepository
             ).execute(GetFavoritePostsUseCase.InParams(userId = 1))
                 .test()
                 .assertNoErrors()
