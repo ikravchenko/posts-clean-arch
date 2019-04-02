@@ -5,5 +5,5 @@ import io.reactivex.Single
 
 interface PostRepository {
 
-    fun getPosts(userId: Int, favorite: Boolean): Single<List<Post>>
+    fun getPosts(userId: Int): Single<List<Post>>
 }

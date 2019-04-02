@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 28
@@ -36,4 +36,22 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation "io.kotlintest:kotlintest:2.0.7"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
+
+    //remote
+    def okHttpVersion = '3.11.0'
+    def retrofitVersion = '2.4.0'
+    def moshiVersion = '1.6.0'
+    implementation("com.squareup.moshi:moshi-kotlin:$moshiVersion") {
+        exclude group: 'org.jetbrains.kotlin'
+    }
+    implementation "com.squareup.moshi:moshi-adapters:$moshiVersion"
+    implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
+
+    def daggerVersion = '2.17'
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    implementation "com.google.dagger:dagger-android:$daggerVersion"
 }
