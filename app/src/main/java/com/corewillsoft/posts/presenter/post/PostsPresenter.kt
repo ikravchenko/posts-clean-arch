@@ -2,6 +2,7 @@ package com.corewillsoft.posts.presenter.post
 
 import com.corewillsoft.posts.app.di.ObserveOnScheduler
 import com.corewillsoft.posts.presenter.PresenterLifecycle
+import com.corewillsoft.posts.presenter.login.UserInteractor
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -22,7 +23,8 @@ interface PostsPresenter : PresenterLifecycle {
 
 class PostsPresenterImpl @Inject constructor(
     private val view: PostsView,
-    private val interactor: PostInteractor,
+    private val userInteractor: UserInteractor,
+    private val postInteractor: PostInteractor,
     @ObserveOnScheduler private val observeOnScheduler: Scheduler
 ) : PostsPresenter {
 
@@ -37,7 +39,7 @@ class PostsPresenterImpl @Inject constructor(
 
     private fun loadAll() {
         view.showProgress()
-        disposables += interactor.allPosts
+        disposables += postInteractor.allPosts
             .subscribeOn(Schedulers.io())
             .observeOn(observeOnScheduler)
             .subscribeBy(
@@ -59,7 +61,7 @@ class PostsPresenterImpl @Inject constructor(
 
     private fun loadFavorites() {
         view.showProgress()
-        disposables += interactor.favoritePosts
+        disposables += postInteractor.favoritePosts
             .subscribeOn(Schedulers.io())
             .observeOn(observeOnScheduler)
             .subscribeBy(
@@ -75,7 +77,7 @@ class PostsPresenterImpl @Inject constructor(
     }
 
     override fun onPostIsFavoriteToggled(postId: Int, favorite: Boolean) {
-        disposables += interactor.togglePostIsFavorite(postId, favorite)
+        disposables += postInteractor.togglePostIsFavorite(postId, favorite)
             .doOnComplete {
                 if (showFavoritesOnly) {
                     loadFavorites()
@@ -91,6 +93,12 @@ class PostsPresenterImpl @Inject constructor(
     }
 
     override fun onLogoutClicked() {
+        disposables += userInteractor.logout()
+            .subscribeBy(
+                onComplete = { view.navigateToLogin() },
+                onError = {
+                    //do nothing
+                })
     }
 
     override fun start() {

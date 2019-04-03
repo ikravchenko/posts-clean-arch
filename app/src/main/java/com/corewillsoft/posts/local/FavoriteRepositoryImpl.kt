@@ -31,6 +31,10 @@ class FavoriteRepositoryImpl @Inject constructor(@Named(NAME) private val prefer
         preferences.edit().putStringSet(IDS_KEY, modified).apply()
     }
 
+    override fun clear() {
+        preferences.edit().clear().apply()
+    }
+
 
     companion object {
         const val NAME = "FAVORITES"

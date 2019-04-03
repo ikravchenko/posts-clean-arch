@@ -13,7 +13,9 @@ import android.widget.TextView
 import com.corewillsoft.posts.R
 import com.corewillsoft.posts.app.di.ContextModule
 import com.corewillsoft.posts.app.feature.posts.PostsActivity
+import com.corewillsoft.posts.domain.post.repository.FavoriteRepository
 import com.corewillsoft.posts.domain.user.repository.UserRepository
+import com.corewillsoft.posts.local.FavoriteRepositoryImpl
 import com.corewillsoft.posts.local.UserRepositoryImpl
 import com.corewillsoft.posts.presenter.login.*
 import dagger.Component
@@ -51,6 +53,14 @@ class LoginModule(private val view: LoginView) {
     @Provides
     @Named(UserRepositoryImpl.NAME)
     fun userPreferences(context: Context): SharedPreferences = context.getSharedPreferences(UserRepositoryImpl.NAME, Context.MODE_PRIVATE)
+
+    @Provides
+    fun provideFavoriteRepository(impl: FavoriteRepositoryImpl): FavoriteRepository = impl
+
+    @Provides
+    @Named(FavoriteRepositoryImpl.NAME)
+    fun favoritePreferences(context: Context): SharedPreferences =
+        context.getSharedPreferences(FavoriteRepositoryImpl.NAME, Context.MODE_PRIVATE)
 }
 
 class LoginActivity : AppCompatActivity(), LoginView {

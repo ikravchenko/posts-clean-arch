@@ -7,4 +7,6 @@ interface FavoriteRepository {
     fun addPostId(id: Int)
 
     fun removePostId(id: Int)
+
+    fun clear()
 }

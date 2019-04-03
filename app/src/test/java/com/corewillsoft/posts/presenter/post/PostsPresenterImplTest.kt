@@ -1,5 +1,6 @@
 package com.corewillsoft.posts.presenter.post
 
+import com.corewillsoft.posts.presenter.login.UserInteractor
 import com.nhaarman.mockitokotlin2.*
 import io.kotlintest.specs.WordSpec
 import io.reactivex.Completable
@@ -13,14 +14,20 @@ class PostsPresenterImplTest : WordSpec() {
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
 
         val view = mock<PostsView>()
-        val interactor = mock<PostInteractor>()
-        val presenter = PostsPresenterImpl(view = view, interactor = interactor, observeOnScheduler = Schedulers.trampoline())
+        val postInteractor = mock<PostInteractor>()
+        val userInteractor = mock<UserInteractor>()
+        val presenter = PostsPresenterImpl(
+            view = view,
+            userInteractor = userInteractor,
+            postInteractor = postInteractor,
+            observeOnScheduler = Schedulers.trampoline()
+        )
 
         "onAllClicked" should {
 
             "show progress and items on successful load" {
                 val posts = listOf<PresentationPost>(mock())
-                whenever(interactor.allPosts).thenReturn(Single.just(posts))
+                whenever(postInteractor.allPosts).thenReturn(Single.just(posts))
 
                 presenter.onAllClicked()
 
@@ -32,7 +39,7 @@ class PostsPresenterImplTest : WordSpec() {
             }
 
             "show progress and error on loading failure" {
-                whenever(interactor.allPosts).thenReturn(Single.error(Exception("something went wrong")))
+                whenever(postInteractor.allPosts).thenReturn(Single.error(Exception("something went wrong")))
 
                 presenter.onAllClicked()
 
@@ -48,7 +55,7 @@ class PostsPresenterImplTest : WordSpec() {
 
             "show progress and items on successful load" {
                 val posts = listOf<PresentationPost>(mock())
-                whenever(interactor.favoritePosts).thenReturn(Single.just(posts))
+                whenever(postInteractor.favoritePosts).thenReturn(Single.just(posts))
 
                 presenter.onFavoriteClicked()
 
@@ -60,7 +67,7 @@ class PostsPresenterImplTest : WordSpec() {
             }
 
             "show progress and error on loading failure" {
-                whenever(interactor.favoritePosts).thenReturn(Single.error(Exception("something went wrong")))
+                whenever(postInteractor.favoritePosts).thenReturn(Single.error(Exception("something went wrong")))
 
                 presenter.onFavoriteClicked()
 
@@ -73,10 +80,10 @@ class PostsPresenterImplTest : WordSpec() {
 
             "onPostIsFavoriteToggled" should {
 
-                "toggles a post favorite status and refreshes view" {
+                "toggle a post favorite status and refresh view" {
                     val posts = listOf<PresentationPost>(mock())
-                    whenever(interactor.allPosts).thenReturn(Single.just(posts))
-                    whenever(interactor.togglePostIsFavorite(any(), any())).thenReturn(Completable.complete())
+                    whenever(postInteractor.allPosts).thenReturn(Single.just(posts))
+                    whenever(postInteractor.togglePostIsFavorite(any(), any())).thenReturn(Completable.complete())
 
                     presenter.onPostIsFavoriteToggled(1, true)
 
@@ -86,7 +93,19 @@ class PostsPresenterImplTest : WordSpec() {
                         verify(view).showPosts(posts)
                     }
 
-                    verify(interactor).togglePostIsFavorite(1, true)
+                    verify(postInteractor).togglePostIsFavorite(1, true)
+                }
+            }
+
+            "onLogoutClicked" should {
+
+                "navigate back to login" {
+                    whenever(userInteractor.logout()).thenReturn(Completable.complete())
+
+                    presenter.onLogoutClicked()
+
+                    verify(view).navigateToLogin()
+                    verify(userInteractor).logout()
                 }
             }
         }

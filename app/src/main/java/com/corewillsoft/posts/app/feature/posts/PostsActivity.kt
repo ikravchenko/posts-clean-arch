@@ -2,6 +2,7 @@ package com.corewillsoft.posts.app.feature.posts
 
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -12,11 +13,14 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.corewillsoft.posts.R
 import com.corewillsoft.posts.app.di.*
+import com.corewillsoft.posts.app.feature.login.LoginActivity
 import com.corewillsoft.posts.domain.post.repository.FavoriteRepository
 import com.corewillsoft.posts.domain.post.repository.PostRepository
 import com.corewillsoft.posts.domain.user.repository.UserRepository
 import com.corewillsoft.posts.local.FavoriteRepositoryImpl
 import com.corewillsoft.posts.local.UserRepositoryImpl
+import com.corewillsoft.posts.presenter.login.UserInteractor
+import com.corewillsoft.posts.presenter.login.UserInteractorImpl
 import com.corewillsoft.posts.presenter.post.*
 import com.corewillsoft.posts.remote.post.repository.PostRepositoryImpl
 import dagger.Component
@@ -47,18 +51,21 @@ class PostsModule(private val view: PostsView) {
     fun providePresenter(impl: PostsPresenterImpl): PostsPresenter = impl
 
     @Provides
-    fun provideInteractor(impl: PostInteractorImpl): PostInteractor = impl
-
-    @Provides
-    fun provideFavoriteRepository(impl: FavoriteRepositoryImpl): FavoriteRepository = impl
+    fun providePostInteractor(impl: PostInteractorImpl): PostInteractor = impl
 
     @Provides
     fun providePostRepository(impl: PostRepositoryImpl): PostRepository = impl
 
     @Provides
+    fun provideFavoriteRepository(impl: FavoriteRepositoryImpl): FavoriteRepository = impl
+
+    @Provides
     @Named(FavoriteRepositoryImpl.NAME)
     fun favoritePreferences(context: Context): SharedPreferences =
         context.getSharedPreferences(FavoriteRepositoryImpl.NAME, Context.MODE_PRIVATE)
+
+    @Provides
+    fun provideUserInteractor(impl: UserInteractorImpl): UserInteractor = impl
 
     @Provides
     fun provideUserRepository(impl: UserRepositoryImpl): UserRepository = impl
@@ -70,15 +77,6 @@ class PostsModule(private val view: PostsView) {
 }
 
 class PostsActivity : AppCompatActivity(), PostsView {
-
-    @Suppress("Deprecated")
-    private val progressDialog: ProgressDialog by lazy {
-        ProgressDialog(this).apply {
-            setMessage(context.getString(R.string.progress_loading))
-            setCancelable(false)
-        }
-    }
-
 
     @Inject
     lateinit var presenter: PostsPresenter
@@ -161,15 +159,16 @@ class PostsActivity : AppCompatActivity(), PostsView {
     }
 
     override fun showProgress() {
-        progressDialog.show()
     }
 
     override fun hideProgress() {
-        progressDialog.hide()
     }
 
     override fun navigateToLogin() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        startActivity(Intent(this, LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+        })
+        finish()
     }
 
     override fun navigateToComments(postId: Int) {
