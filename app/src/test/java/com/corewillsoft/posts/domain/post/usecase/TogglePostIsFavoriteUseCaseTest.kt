@@ -1,13 +1,10 @@
 package com.corewillsoft.posts.domain.post.usecase
 
-import com.corewillsoft.posts.domain.post.model.Post
 import com.corewillsoft.posts.domain.post.repository.FavoriteRepository
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
+import com.corewillsoft.posts.domain.post.usecase.TogglePostIsFavoriteUseCase.*
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import io.kotlintest.specs.StringSpec
-import io.reactivex.Completable
 
 class TogglePostIsFavoriteUseCaseTest : StringSpec() {
 
@@ -17,7 +14,7 @@ class TogglePostIsFavoriteUseCaseTest : StringSpec() {
         val useCase = TogglePostIsFavoriteUseCase(repository = repository)
 
         "removes post from favorites if post is favorite" {
-            useCase.execute(Post(userId = 1, id = 1, title = "T", body = "B", favorite = true))
+            useCase.execute(InParams(1,true))
                 .test()
                 .assertComplete()
 
@@ -25,7 +22,7 @@ class TogglePostIsFavoriteUseCaseTest : StringSpec() {
         }
 
         "adds post to favorites if post is not favorite" {
-            useCase.execute(Post(userId = 1, id = 1, title = "T", body = "B", favorite = false))
+            useCase.execute(InParams(1,false))
                 .test()
                 .assertComplete()
 

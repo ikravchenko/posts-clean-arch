@@ -97,9 +97,7 @@ class PostsActivity : AppCompatActivity(), PostsView {
         false
     }
 
-    private val postsAdapter: PostsAdapter by lazy {
-        PostsAdapter()
-    }
+    private lateinit var postsAdapter: PostsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,14 +110,27 @@ class PostsActivity : AppCompatActivity(), PostsView {
             .build()
             .inject(this)
 
+        initNavigationView(savedInstanceState)
+        initRecyclerVIew()
+    }
+
+    private fun initNavigationView(savedInstanceState: Bundle?) {
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         if (savedInstanceState == null) {
             navigation.selectedItemId = R.id.navigation_all
         }
+    }
 
+    private fun initRecyclerVIew() {
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         postsRecyclerView.layoutManager = linearLayoutManager
 
+        postsAdapter = PostsAdapter(object : PostFavoriteListener {
+            override fun onFavoriteToggled(id: Int, favorite: Boolean) {
+                presenter.onPostIsFavoriteToggled(id, favorite)
+            }
+
+        })
         postsRecyclerView.adapter = postsAdapter
         postsRecyclerView.addItemDecoration(
             DividerItemDecoration(this, linearLayoutManager.orientation)

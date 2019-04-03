@@ -15,7 +15,7 @@ interface PostsPresenter : PresenterLifecycle {
 
     fun onFavoriteClicked()
 
-    fun onPostIsFavoriteToggled(postId: Int)
+    fun onPostIsFavoriteToggled(postId: Int, favorite: Boolean)
 
     fun onLogoutClicked()
 }
@@ -26,9 +26,16 @@ class PostsPresenterImpl @Inject constructor(
     @ObserveOnScheduler private val observeOnScheduler: Scheduler
 ) : PostsPresenter {
 
+    private var showFavoritesOnly = false
+
     private val disposables: CompositeDisposable by lazy { CompositeDisposable() }
 
     override fun onAllClicked() {
+        showFavoritesOnly = false
+        loadAll()
+    }
+
+    private fun loadAll() {
         view.showProgress()
         disposables += interactor.allPosts
             .subscribeOn(Schedulers.io())
@@ -46,6 +53,11 @@ class PostsPresenterImpl @Inject constructor(
     }
 
     override fun onFavoriteClicked() {
+        showFavoritesOnly = true
+        loadFavorites()
+    }
+
+    private fun loadFavorites() {
         view.showProgress()
         disposables += interactor.favoritePosts
             .subscribeOn(Schedulers.io())
@@ -62,7 +74,20 @@ class PostsPresenterImpl @Inject constructor(
             )
     }
 
-    override fun onPostIsFavoriteToggled(postId: Int) {
+    override fun onPostIsFavoriteToggled(postId: Int, favorite: Boolean) {
+        disposables += interactor.togglePostIsFavorite(postId, favorite)
+            .doOnComplete {
+                if (showFavoritesOnly) {
+                    loadFavorites()
+                } else {
+                    loadAll()
+                }
+            }
+            .subscribeBy(onComplete = {
+                //do nothing
+            }, onError = {
+                //do nothing
+            })
     }
 
     override fun onLogoutClicked() {

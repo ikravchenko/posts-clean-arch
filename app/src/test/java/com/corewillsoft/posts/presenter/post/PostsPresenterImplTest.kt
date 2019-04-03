@@ -1,9 +1,8 @@
 package com.corewillsoft.posts.presenter.post
 
-import com.nhaarman.mockitokotlin2.inOrder
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import io.kotlintest.specs.WordSpec
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
@@ -69,6 +68,25 @@ class PostsPresenterImplTest : WordSpec() {
                     verify(view).showProgress()
                     verify(view).hideProgress()
                     verify(view).showLoadPostsError()
+                }
+            }
+
+            "onPostIsFavoriteToggled" should {
+
+                "toggles a post favorite status and refreshes view" {
+                    val posts = listOf<PresentationPost>(mock())
+                    whenever(interactor.allPosts).thenReturn(Single.just(posts))
+                    whenever(interactor.togglePostIsFavorite(any(), any())).thenReturn(Completable.complete())
+
+                    presenter.onPostIsFavoriteToggled(1, true)
+
+                    inOrder(view) {
+                        verify(view).showProgress()
+                        verify(view).hideProgress()
+                        verify(view).showPosts(posts)
+                    }
+
+                    verify(interactor).togglePostIsFavorite(1, true)
                 }
             }
         }
