@@ -1,19 +1,21 @@
-package com.corewillsoft.posts.app.feature.posts
+package com.corewillsoft.posts.app.feature.posts.list
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.corewillsoft.posts.R
-import com.corewillsoft.posts.presenter.post.PresentationPost
+import com.corewillsoft.posts.presenter.post.model.PresentationPost
 import kotlinx.android.synthetic.main.list_item_post.view.*
 
-interface PostFavoriteListener {
+interface PostInteractionListener {
 
     fun onFavoriteToggled(id: Int, favorite: Boolean)
+
+    fun onPostClicked(post: PresentationPost)
 }
 
-class PostsAdapter(private val postFavoriteListener: PostFavoriteListener) : RecyclerView.Adapter<PostViewHolder>() {
+class PostsAdapter(private val postInteractionListener: PostInteractionListener) : RecyclerView.Adapter<PostViewHolder>() {
 
     var items: List<PresentationPost> = emptyList()
         set(value) {
@@ -34,17 +36,18 @@ class PostsAdapter(private val postFavoriteListener: PostFavoriteListener) : Rec
     override fun getItemCount() = items.count()
 
     override fun onBindViewHolder(viewHolder: PostViewHolder, position: Int) {
-        viewHolder.bind(items[position], postFavoriteListener)
+        viewHolder.bind(items[position], postInteractionListener)
     }
 
 }
 
 class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    fun bind(post: PresentationPost, postFavoriteListener: PostFavoriteListener) {
+    fun bind(post: PresentationPost, postInteractionListener: PostInteractionListener) {
         itemView.title.text = post.title
         itemView.subtitle.text = post.body
-        itemView.favoriteView.visibility = if (post.favorite) View.VISIBLE else View.GONE
-        itemView.setOnClickListener { postFavoriteListener.onFavoriteToggled(post.id, post.favorite) }
+        itemView.favoriteView.setImageResource(if (post.favorite) android.R.drawable.star_on else android.R.drawable.star_off)
+        itemView.favoriteView.setOnClickListener { postInteractionListener.onFavoriteToggled(post.id, post.favorite) }
+        itemView.setOnClickListener {postInteractionListener.onPostClicked(post)}
     }
 }

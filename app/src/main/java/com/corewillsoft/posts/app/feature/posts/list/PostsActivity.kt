@@ -1,6 +1,5 @@
-package com.corewillsoft.posts.app.feature.posts
+package com.corewillsoft.posts.app.feature.posts.list
 
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -14,6 +13,8 @@ import android.view.*
 import com.corewillsoft.posts.R
 import com.corewillsoft.posts.app.di.*
 import com.corewillsoft.posts.app.feature.login.LoginActivity
+import com.corewillsoft.posts.app.feature.posts.detail.ParcelablePresentationPostMapper
+import com.corewillsoft.posts.app.feature.posts.detail.PostDetailActivity
 import com.corewillsoft.posts.domain.post.repository.FavoriteRepository
 import com.corewillsoft.posts.domain.post.repository.PostRepository
 import com.corewillsoft.posts.domain.user.repository.UserRepository
@@ -21,7 +22,8 @@ import com.corewillsoft.posts.local.FavoriteRepositoryImpl
 import com.corewillsoft.posts.local.UserRepositoryImpl
 import com.corewillsoft.posts.presenter.login.UserInteractor
 import com.corewillsoft.posts.presenter.login.UserInteractorImpl
-import com.corewillsoft.posts.presenter.post.*
+import com.corewillsoft.posts.presenter.post.list.*
+import com.corewillsoft.posts.presenter.post.model.PresentationPost
 import com.corewillsoft.posts.remote.post.repository.PostRepositoryImpl
 import dagger.Component
 import dagger.Module
@@ -81,6 +83,9 @@ class PostsActivity : AppCompatActivity(), PostsView {
     @Inject
     lateinit var presenter: PostsPresenter
 
+    @Inject
+    lateinit var postMapper: ParcelablePresentationPostMapper
+
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_all -> {
@@ -123,11 +128,15 @@ class PostsActivity : AppCompatActivity(), PostsView {
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         postsRecyclerView.layoutManager = linearLayoutManager
 
-        postsAdapter = PostsAdapter(object : PostFavoriteListener {
+        postsAdapter = PostsAdapter(object :
+            PostInteractionListener {
             override fun onFavoriteToggled(id: Int, favorite: Boolean) {
                 presenter.onPostIsFavoriteToggled(id, favorite)
             }
 
+            override fun onPostClicked(post: PresentationPost) {
+                presenter.onPostClicked(post)
+            }
         })
         postsRecyclerView.adapter = postsAdapter
         postsRecyclerView.addItemDecoration(
@@ -155,7 +164,7 @@ class PostsActivity : AppCompatActivity(), PostsView {
     }
 
     override fun showLoadPostsError() {
-        Snackbar.make(container, R.string.posts_loading_error_message, Snackbar.LENGTH_LONG).show()
+        Snackbar.make(container, R.string.loading_error_message, Snackbar.LENGTH_LONG).show()
     }
 
     override fun showProgress() {
@@ -165,14 +174,14 @@ class PostsActivity : AppCompatActivity(), PostsView {
     }
 
     override fun navigateToLogin() {
-        startActivity(Intent(this, LoginActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-        })
+        startActivity(Intent(this, LoginActivity::class.java))
         finish()
     }
 
-    override fun navigateToComments(postId: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun navigateToDetails(post: PresentationPost) {
+        startActivity(Intent(this, PostDetailActivity::class.java).apply {
+            putExtra(PostDetailActivity.POST_KEY, postMapper.to(post))
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

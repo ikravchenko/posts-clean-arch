@@ -1,4 +1,6 @@
-package com.corewillsoft.posts.presenter.post
+package com.corewillsoft.posts.presenter.post.list
+
+import com.corewillsoft.posts.presenter.post.model.PresentationPost
 
 interface PostsView {
 
@@ -12,5 +14,5 @@ interface PostsView {
 
     fun navigateToLogin()
 
-    fun navigateToComments(postId: Int)
+    fun navigateToDetails(post: PresentationPost)
 }

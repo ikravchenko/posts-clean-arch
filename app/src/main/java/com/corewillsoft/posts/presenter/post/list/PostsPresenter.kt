@@ -1,8 +1,9 @@
-package com.corewillsoft.posts.presenter.post
+package com.corewillsoft.posts.presenter.post.list
 
 import com.corewillsoft.posts.app.di.ObserveOnScheduler
 import com.corewillsoft.posts.presenter.PresenterLifecycle
 import com.corewillsoft.posts.presenter.login.UserInteractor
+import com.corewillsoft.posts.presenter.post.model.PresentationPost
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -19,6 +20,8 @@ interface PostsPresenter : PresenterLifecycle {
     fun onPostIsFavoriteToggled(postId: Int, favorite: Boolean)
 
     fun onLogoutClicked()
+
+    fun onPostClicked(post: PresentationPost)
 }
 
 class PostsPresenterImpl @Inject constructor(
@@ -99,6 +102,10 @@ class PostsPresenterImpl @Inject constructor(
                 onError = {
                     //do nothing
                 })
+    }
+
+    override fun onPostClicked(post: PresentationPost) {
+        view.navigateToDetails(post)
     }
 
     override fun start() {

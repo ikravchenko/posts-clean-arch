@@ -1,4 +1,4 @@
-package com.corewillsoft.posts.presenter.post
+package com.corewillsoft.posts.presenter.post.model
 
 data class PresentationPost(
     val id: Int,

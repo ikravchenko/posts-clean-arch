@@ -7,26 +7,31 @@
                                              android:padding="8dp"
                                              android:background="?selectableItemBackground">
 
+
+    <TextView
+            android:id="@+id/email" android:layout_width="0dp" android:layout_height="wrap_content"
+            tools:text="johmn@doe.com"
+            android:textStyle="italic"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/title"
+            android:layout_marginBottom="8dp"/>
+
     <TextView
             android:id="@+id/title" android:layout_width="0dp" android:layout_height="wrap_content"
             tools:text="Title of the post"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/favoriteView"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/subtitle"
             android:layout_marginBottom="8dp"/>
+
     <TextView
             tools:text="Subtitle of the post that might take more than one line, even more"
             app:layout_constraintTop_toBottomOf="@+id/title"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/favoriteView"
+            app:layout_constraintRight_toRightOf="parent"
             android:id="@+id/subtitle" android:layout_width="0dp" android:layout_height="wrap_content"/>
-
-    <ImageView
-            android:id="@+id/favoriteView" android:layout_width="48dp" android:layout_height="48dp"
-            tools:src="@android:drawable/star_on"
-            app:layout_constraintTop_toBottomOf="parent"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
 </android.support.constraint.ConstraintLayout>

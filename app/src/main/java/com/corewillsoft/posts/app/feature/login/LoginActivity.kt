@@ -12,7 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import com.corewillsoft.posts.R
 import com.corewillsoft.posts.app.di.ContextModule
-import com.corewillsoft.posts.app.feature.posts.PostsActivity
+import com.corewillsoft.posts.app.feature.posts.list.PostsActivity
 import com.corewillsoft.posts.domain.post.repository.FavoriteRepository
 import com.corewillsoft.posts.domain.user.repository.UserRepository
 import com.corewillsoft.posts.local.FavoriteRepositoryImpl
@@ -96,7 +96,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
             }
 
         })
-        userIdEditText.setOnEditorActionListener { view: TextView, actionId: Int, _: KeyEvent? ->
+        userIdEditText.setOnEditorActionListener { _: TextView, actionId: Int, _: KeyEvent? ->
             when (actionId) {
                 EditorInfo.IME_ACTION_SEND -> {
                     presenter.onLoginClicked(userIdEditText.text.toString())
@@ -108,9 +108,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
     }
 
     override fun navigateToPosts() {
-        startActivity(Intent(this, PostsActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-        })
+        startActivity(Intent(this, PostsActivity::class.java))
         finish()
     }
 

@@ -5,6 +5,42 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".app.feature.comments.PostCommentsActivity">
+        tools:context=".app.feature.posts.detail.PostDetailActivity"
+        android:padding="8dp">
+
+    <TextView
+            android:id="@+id/postTitle" android:layout_width="0dp" android:layout_height="wrap_content"
+            tools:text="Title of the post"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/postFavoriteView"
+            app:layout_constraintBottom_toTopOf="@+id/postSubtitle"
+            android:layout_marginBottom="8dp"/>
+    <TextView
+            tools:text="Subtitle of the post that might take more than one line, even more"
+            app:layout_constraintTop_toBottomOf="@+id/postTitle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/postFavoriteView"
+            android:id="@+id/postSubtitle" android:layout_width="0dp" android:layout_height="wrap_content"/>
+
+    <ImageView
+            android:id="@+id/postFavoriteView" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:src="@android:drawable/star_on"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+    <android.support.v7.widget.RecyclerView
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/postSubtitle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/commentsRecyclerView"
+            tools:listitem="@layout/list_item_comment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -1,8 +1,10 @@
-package com.corewillsoft.posts.presenter.post
+package com.corewillsoft.posts.presenter.post.list
 
 import com.corewillsoft.posts.domain.post.usecase.GetAllPostsUseCase
 import com.corewillsoft.posts.domain.post.usecase.GetFavoritePostsUseCase
 import com.corewillsoft.posts.domain.post.usecase.TogglePostIsFavoriteUseCase
+import com.corewillsoft.posts.presenter.post.mapper.PresentationPostMapper
+import com.corewillsoft.posts.presenter.post.model.PresentationPost
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject

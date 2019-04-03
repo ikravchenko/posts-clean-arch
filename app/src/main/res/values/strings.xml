@@ -4,7 +4,8 @@
     <string name="title_favorites">Favorites</string>
     <string name="login_user_id_hint">User ID:</string>
     <string name="login_button_title">Login</string>
-    <string name="progress_loading">please wait...</string>
-    <string name="posts_loading_error_message">error while getting posts, please try again</string>
+    <string name="progress_loading">please wait…</string>
+    <string name="loading_error_message">error while getting data, please try again</string>
     <string name="action_logout">Logout</string>
+    <string name="activity_post_detail_title">Comments</string>
 </resources>
