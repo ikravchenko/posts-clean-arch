@@ -77,5 +77,23 @@ class GetAllPostsUseCaseTest : StringSpec() {
             verify(postRepository).getPosts(1)
             verify(favoriteRepository).favoritePostIds
         }
+
+        "returns error with authorize exception if user is there is not logged in user" {
+            val postRepository = mock<PostRepository>()
+            val favoriteRepository = mock<FavoriteRepository>()
+            val userRepository = mock<UserRepository> {
+                on { id } doReturn null
+            }
+
+            GetAllPostsUseCase(
+                postRepository = postRepository,
+                favoriteRepository = favoriteRepository,
+                userRepository = userRepository
+            ).execute()
+                .test()
+                .assertError(NotAuthorizedException::class.java)
+
+            verify(userRepository).id
+        }
     }
 }

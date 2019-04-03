@@ -1,4 +1,4 @@
-package com.corewillsoft.posts.presenter.login
+package com.corewillsoft.posts.presenter.login.interactor
 
 import com.corewillsoft.posts.domain.user.usecase.GetCurrentUserIdUseCase
 import com.corewillsoft.posts.domain.user.usecase.LoginUseCase
@@ -6,6 +6,9 @@ import com.corewillsoft.posts.domain.user.usecase.LogoutUseCase
 import io.reactivex.Completable
 import javax.inject.Inject
 
+/**
+ * Facade to interact with user data in presentation layer
+ */
 interface UserInteractor {
 
     val currentUserId: Int?

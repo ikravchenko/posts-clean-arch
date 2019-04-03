@@ -1,6 +1,6 @@
 package com.corewillsoft.posts.presenter.post.mapper
 
-import com.corewillsoft.posts.domain.Mapper
+import com.corewillsoft.posts.common.Mapper
 import com.corewillsoft.posts.domain.comment.model.Comment
 import com.corewillsoft.posts.presenter.post.model.PresentationComment
 import javax.inject.Inject

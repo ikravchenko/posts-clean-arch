@@ -2,9 +2,7 @@ package com.corewillsoft.posts.app.feature.posts.detail
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.design.widget.Snackbar
-import android.support.v4.app.NavUtils
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -16,16 +14,19 @@ import com.corewillsoft.posts.app.di.ContextModule
 import com.corewillsoft.posts.app.di.DaggerServiceApiComponent
 import com.corewillsoft.posts.app.di.RxModule
 import com.corewillsoft.posts.app.di.ServiceApiComponent
-import com.corewillsoft.posts.domain.BidirectionalMapper
+import com.corewillsoft.posts.app.feature.posts.mapper.ParcelablePresentationPostMapper
 import com.corewillsoft.posts.domain.comment.repository.CommentRepository
-import com.corewillsoft.posts.presenter.post.detail.*
+import com.corewillsoft.posts.presenter.post.detail.interactor.CommentInteractor
+import com.corewillsoft.posts.presenter.post.detail.interactor.CommentInteractorImpl
+import com.corewillsoft.posts.presenter.post.detail.presenter.PostDetailPresenter
+import com.corewillsoft.posts.presenter.post.detail.presenter.PostDetailPresenterImpl
+import com.corewillsoft.posts.presenter.post.detail.view.PostDetailView
 import com.corewillsoft.posts.presenter.post.model.PresentationComment
 import com.corewillsoft.posts.presenter.post.model.PresentationPost
 import com.corewillsoft.posts.remote.comment.repository.CommentRepositoryImpl
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.activity_post_comments.*
 import kotlinx.android.synthetic.main.activity_posts.*
 import kotlinx.android.synthetic.main.list_item_comment.view.*
@@ -65,37 +66,11 @@ class PostDetailModule(
     fun provideCommentsRepository(impl: CommentRepositoryImpl): CommentRepository = impl
 }
 
-
-@Parcelize
-class ParcelablePost(
-    val id: Int,
-    val title: String,
-    val body: String,
-    val favorite: Boolean
-) : Parcelable
-
-class ParcelablePresentationPostMapper @Inject constructor() : BidirectionalMapper<ParcelablePost, PresentationPost> {
-
-    override fun from(from: ParcelablePost) = with(from) {
-        PresentationPost(
-            id = id,
-            favorite = favorite,
-            title = title,
-            body = body
-        )
-    }
-
-    override fun to(from: PresentationPost) = with(from) {
-        ParcelablePost(
-            id = id,
-            favorite = favorite,
-            title = title,
-            body = body
-        )
-    }
-
-}
-
+/**
+ * Represents post details with its comments
+ *
+ * @see com.corewillsoft.posts.app.feature.posts.list.PostsActivity
+ */
 class PostDetailActivity : AppCompatActivity(), PostDetailView {
 
     companion object {
@@ -168,39 +143,3 @@ class PostDetailActivity : AppCompatActivity(), PostDetailView {
     override fun hideProgress() {
     }
 }
-
-class CommentsAdapter : RecyclerView.Adapter<CommentViewHolder>() {
-
-    var items: List<PresentationComment> = emptyList()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
-
-    override fun onCreateViewHolder(parent: ViewGroup, position: Int): CommentViewHolder {
-        return CommentViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_comment,
-                parent,
-                false
-            )
-        )
-    }
-
-    override fun getItemCount() = items.count()
-
-    override fun onBindViewHolder(viewHolder: CommentViewHolder, position: Int) {
-        viewHolder.bind(items[position])
-    }
-
-}
-
-class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-    fun bind(comment: PresentationComment) {
-        itemView.email.text = comment.email
-        itemView.title.text = comment.name
-        itemView.subtitle.text = comment.body
-    }
-}
-

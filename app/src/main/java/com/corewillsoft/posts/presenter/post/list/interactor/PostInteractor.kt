@@ -1,4 +1,4 @@
-package com.corewillsoft.posts.presenter.post.list
+package com.corewillsoft.posts.presenter.post.list.interactor
 
 import com.corewillsoft.posts.domain.post.usecase.GetAllPostsUseCase
 import com.corewillsoft.posts.domain.post.usecase.GetFavoritePostsUseCase
@@ -9,6 +9,9 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
+/**
+ * Facade to interact with posts data in presentation layer
+ */
 interface PostInteractor {
 
     val allPosts: Single<List<PresentationPost>>

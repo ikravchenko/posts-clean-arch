@@ -17,7 +17,11 @@ import com.corewillsoft.posts.domain.post.repository.FavoriteRepository
 import com.corewillsoft.posts.domain.user.repository.UserRepository
 import com.corewillsoft.posts.local.FavoriteRepositoryImpl
 import com.corewillsoft.posts.local.UserRepositoryImpl
-import com.corewillsoft.posts.presenter.login.*
+import com.corewillsoft.posts.presenter.login.interactor.UserInteractor
+import com.corewillsoft.posts.presenter.login.interactor.UserInteractorImpl
+import com.corewillsoft.posts.presenter.login.presenter.LoginPresenter
+import com.corewillsoft.posts.presenter.login.presenter.LoginPresenterImpl
+import com.corewillsoft.posts.presenter.login.view.LoginView
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -36,6 +40,12 @@ interface LoginComponent {
     fun inject(activity: LoginActivity)
 }
 
+/**
+ * Contains view and integrates logic for login functionality
+ *
+ * @see PostsActivity
+ * @see com.corewillsoft.posts.app.feature.posts.detail.PostDetailActivity
+ */
 @Module(includes = [ContextModule::class])
 class LoginModule(private val view: LoginView) {
     @Provides

@@ -1,9 +1,9 @@
 package com.corewillsoft.posts.presenter.post
 
-import com.corewillsoft.posts.presenter.login.UserInteractor
-import com.corewillsoft.posts.presenter.post.list.PostInteractor
-import com.corewillsoft.posts.presenter.post.list.PostsPresenterImpl
-import com.corewillsoft.posts.presenter.post.list.PostsView
+import com.corewillsoft.posts.presenter.login.interactor.UserInteractor
+import com.corewillsoft.posts.presenter.post.list.interactor.PostInteractor
+import com.corewillsoft.posts.presenter.post.list.presenter.PostsPresenterImpl
+import com.corewillsoft.posts.presenter.post.list.view.PostsView
 import com.corewillsoft.posts.presenter.post.model.PresentationPost
 import com.nhaarman.mockitokotlin2.*
 import io.kotlintest.specs.WordSpec

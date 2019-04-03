@@ -1,5 +1,8 @@
 package com.corewillsoft.posts.presenter.login
 
+import com.corewillsoft.posts.presenter.login.interactor.UserInteractor
+import com.corewillsoft.posts.presenter.login.presenter.LoginPresenterImpl
+import com.corewillsoft.posts.presenter.login.view.LoginView
 import com.nhaarman.mockitokotlin2.*
 import io.kotlintest.specs.WordSpec
 import io.reactivex.Completable
@@ -10,7 +13,8 @@ class LoginPresenterImplTest : WordSpec() {
 
         val view = mock<LoginView>()
         val interactor = mock<UserInteractor>()
-        val presenter = LoginPresenterImpl(interactor = interactor, view = view)
+        val presenter =
+            LoginPresenterImpl(interactor = interactor, view = view)
 
         "start" should {
 

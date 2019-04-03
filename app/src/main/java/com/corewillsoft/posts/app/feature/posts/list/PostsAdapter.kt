@@ -8,13 +8,28 @@ import com.corewillsoft.posts.R
 import com.corewillsoft.posts.presenter.post.model.PresentationPost
 import kotlinx.android.synthetic.main.list_item_post.view.*
 
+/**
+ * Interface to interact with a single [PresentationPost]
+ */
 interface PostInteractionListener {
 
+    /**
+     * called when post favorite state changes
+     *
+     * @param id post id
+     * @param favorite current post favorite state
+     */
     fun onFavoriteToggled(id: Int, favorite: Boolean)
 
+    /**
+     * called when post gets clicked
+     */
     fun onPostClicked(post: PresentationPost)
 }
 
+/**
+ * Represents [PresentationPost]s
+ */
 class PostsAdapter(private val postInteractionListener: PostInteractionListener) : RecyclerView.Adapter<PostViewHolder>() {
 
     var items: List<PresentationPost> = emptyList()

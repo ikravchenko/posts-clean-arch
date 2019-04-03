@@ -1,5 +1,8 @@
 package com.corewillsoft.posts.presenter.post.detail
 
+import com.corewillsoft.posts.presenter.post.detail.interactor.CommentInteractor
+import com.corewillsoft.posts.presenter.post.detail.presenter.PostDetailPresenterImpl
+import com.corewillsoft.posts.presenter.post.detail.view.PostDetailView
 import com.corewillsoft.posts.presenter.post.model.PresentationComment
 import com.corewillsoft.posts.presenter.post.model.PresentationPost
 import com.nhaarman.mockitokotlin2.*
@@ -32,6 +35,8 @@ class PostDetailPresenterImplTest : WordSpec() {
         "start" should {
 
             "show post" {
+                whenever(interactor.getCommentsForPost(any())).thenReturn(Single.never())
+
                 presenter.start()
 
                 verify(view).showPost(post)

@@ -1,8 +1,10 @@
-package com.corewillsoft.posts.presenter.post.list
+package com.corewillsoft.posts.presenter.post.list.presenter
 
 import com.corewillsoft.posts.app.di.ObserveOnScheduler
 import com.corewillsoft.posts.presenter.PresenterLifecycle
-import com.corewillsoft.posts.presenter.login.UserInteractor
+import com.corewillsoft.posts.presenter.login.interactor.UserInteractor
+import com.corewillsoft.posts.presenter.post.list.view.PostsView
+import com.corewillsoft.posts.presenter.post.list.interactor.PostInteractor
 import com.corewillsoft.posts.presenter.post.model.PresentationPost
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -11,6 +13,11 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
+/**
+ * Presents posts list of the current user
+ *
+ * @see PostsView
+ */
 interface PostsPresenter : PresenterLifecycle {
 
     fun onAllClicked()

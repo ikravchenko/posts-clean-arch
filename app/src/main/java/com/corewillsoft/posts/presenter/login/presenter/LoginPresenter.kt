@@ -1,11 +1,18 @@
-package com.corewillsoft.posts.presenter.login
+package com.corewillsoft.posts.presenter.login.presenter
 
 import com.corewillsoft.posts.presenter.PresenterLifecycle
+import com.corewillsoft.posts.presenter.login.view.LoginView
+import com.corewillsoft.posts.presenter.login.interactor.UserInteractor
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
+/**
+ * Presents login view and logic
+ *
+ * @see LoginView
+ */
 interface LoginPresenter : PresenterLifecycle {
 
     fun onLoginClicked(userId: String)

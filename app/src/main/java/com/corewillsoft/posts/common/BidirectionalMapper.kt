@@ -1,4 +1,4 @@
-package com.corewillsoft.posts.domain
+package com.corewillsoft.posts.common
 
 /**
  * Mapper interface to provide bidirectional mapping between models

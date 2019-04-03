@@ -6,7 +6,14 @@ import com.corewillsoft.posts.domain.user.usecase.LoginUseCase.InParams
 import io.reactivex.Completable
 import javax.inject.Inject
 
+/**
+ * Logs user into the app
+ *
+ * @see LogoutUseCase
+ * @see GetCurrentUserIdUseCase
+ */
 class LoginUseCase @Inject constructor(private val repository: UserRepository): UseCase<InParams, Completable> {
+
     override fun execute(param: InParams): Completable {
         repository.id = param.id
         return Completable.complete()

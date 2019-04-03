@@ -13,16 +13,20 @@ import android.view.*
 import com.corewillsoft.posts.R
 import com.corewillsoft.posts.app.di.*
 import com.corewillsoft.posts.app.feature.login.LoginActivity
-import com.corewillsoft.posts.app.feature.posts.detail.ParcelablePresentationPostMapper
+import com.corewillsoft.posts.app.feature.posts.mapper.ParcelablePresentationPostMapper
 import com.corewillsoft.posts.app.feature.posts.detail.PostDetailActivity
 import com.corewillsoft.posts.domain.post.repository.FavoriteRepository
 import com.corewillsoft.posts.domain.post.repository.PostRepository
 import com.corewillsoft.posts.domain.user.repository.UserRepository
 import com.corewillsoft.posts.local.FavoriteRepositoryImpl
 import com.corewillsoft.posts.local.UserRepositoryImpl
-import com.corewillsoft.posts.presenter.login.UserInteractor
-import com.corewillsoft.posts.presenter.login.UserInteractorImpl
-import com.corewillsoft.posts.presenter.post.list.*
+import com.corewillsoft.posts.presenter.login.interactor.UserInteractor
+import com.corewillsoft.posts.presenter.login.interactor.UserInteractorImpl
+import com.corewillsoft.posts.presenter.post.list.interactor.PostInteractor
+import com.corewillsoft.posts.presenter.post.list.interactor.PostInteractorImpl
+import com.corewillsoft.posts.presenter.post.list.presenter.PostsPresenter
+import com.corewillsoft.posts.presenter.post.list.presenter.PostsPresenterImpl
+import com.corewillsoft.posts.presenter.post.list.view.PostsView
 import com.corewillsoft.posts.presenter.post.model.PresentationPost
 import com.corewillsoft.posts.remote.post.repository.PostRepositoryImpl
 import dagger.Component
@@ -78,6 +82,11 @@ class PostsModule(private val view: PostsView) {
         context.getSharedPreferences(UserRepositoryImpl.NAME, Context.MODE_PRIVATE)
 }
 
+/**
+ * Represents all posts related to the current logged in user
+ *
+ * @see PostDetailActivity
+ */
 class PostsActivity : AppCompatActivity(), PostsView {
 
     @Inject

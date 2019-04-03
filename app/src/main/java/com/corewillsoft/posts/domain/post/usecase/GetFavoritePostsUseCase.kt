@@ -9,6 +9,12 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
+/**
+ * Gets all favorite posts of the logged in user
+ *
+ * @see GetAllPostsUseCase
+ * @see TogglePostIsFavoriteUseCase
+ */
 class GetFavoritePostsUseCase @Inject constructor(
     private val getAllPostsUseCase: GetAllPostsUseCase
 ) : NonArgUseCase<Single<List<Post>>> {

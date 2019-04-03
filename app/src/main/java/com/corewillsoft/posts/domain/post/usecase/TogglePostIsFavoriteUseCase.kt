@@ -7,6 +7,12 @@ import com.corewillsoft.posts.domain.post.usecase.TogglePostIsFavoriteUseCase.In
 import io.reactivex.Completable
 import javax.inject.Inject
 
+/**
+ * Inverts single post favorite status
+ *
+ * @see GetAllPostsUseCase
+ * @see GetFavoritePostsUseCase
+ */
 class TogglePostIsFavoriteUseCase @Inject constructor(private val repository: FavoriteRepository): UseCase<InParams, Completable> {
 
     override fun execute(param: InParams): Completable {

@@ -9,6 +9,12 @@ import io.reactivex.Single
 import java.lang.Exception
 import javax.inject.Inject
 
+/**
+ * Gets all posts for a logged in user
+ *
+ * @see GetFavoritePostsUseCase
+ * @see TogglePostIsFavoriteUseCase
+ */
 class GetAllPostsUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val postRepository: PostRepository,
@@ -22,6 +28,11 @@ class GetAllPostsUseCase @Inject constructor(
                     val favoriteIds = favoriteRepository.favoritePostIds
                     posts.map { it.copy(favorite = favoriteIds.contains(it.id)) }
                 }
-        } ?: Single.error(Exception("no user id saved to get posts for!"))
+        } ?: Single.error(NotAuthorizedException())
 }
+
+/**
+ * Thrown when trying to get posts when there is no logged in user
+ */
+class NotAuthorizedException: Exception()
 

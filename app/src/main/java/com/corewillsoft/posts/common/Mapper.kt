@@ -1,4 +1,4 @@
-package com.corewillsoft.posts.domain
+package com.corewillsoft.posts.common
 
 /**
  * Mapper interface to provide mapping.
@@ -6,6 +6,8 @@ package com.corewillsoft.posts.domain
  *
  * @param <FROM> the class, which should be mapped from
  * @param <TO> the class, which is returned by the map
+ *
+ * @see BidirectionalMapper
  */
 interface Mapper<in FROM, out TO> {
 
