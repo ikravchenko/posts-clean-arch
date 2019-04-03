@@ -1,29 +1,180 @@
 package com.corewillsoft.posts.app.feature.posts
 
+import android.app.ProgressDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.view.*
 import com.corewillsoft.posts.R
+import com.corewillsoft.posts.app.di.*
+import com.corewillsoft.posts.domain.post.repository.FavoriteRepository
+import com.corewillsoft.posts.domain.post.repository.PostRepository
+import com.corewillsoft.posts.domain.user.repository.UserRepository
+import com.corewillsoft.posts.local.FavoriteRepositoryImpl
+import com.corewillsoft.posts.local.UserRepositoryImpl
+import com.corewillsoft.posts.presenter.post.*
+import com.corewillsoft.posts.remote.post.repository.PostRepositoryImpl
+import dagger.Component
+import dagger.Module
+import dagger.Provides
 import kotlinx.android.synthetic.main.activity_posts.*
+import javax.inject.Inject
+import javax.inject.Named
+import javax.inject.Scope
 
-class PostsActivity : AppCompatActivity() {
+@Scope
+@Retention(AnnotationRetention.SOURCE)
+annotation class PostsScope
 
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+@PostsScope
+@Component(modules = [PostsModule::class], dependencies = [ServiceApiComponent::class])
+interface PostsComponent {
+
+    fun inject(activity: PostsActivity)
+}
+
+@Module(includes = [ContextModule::class, RxModule::class])
+class PostsModule(private val view: PostsView) {
+    @Provides
+    fun provideView(): PostsView = view
+
+    @Provides
+    fun providePresenter(impl: PostsPresenterImpl): PostsPresenter = impl
+
+    @Provides
+    fun provideInteractor(impl: PostInteractorImpl): PostInteractor = impl
+
+    @Provides
+    fun provideFavoriteRepository(impl: FavoriteRepositoryImpl): FavoriteRepository = impl
+
+    @Provides
+    fun providePostRepository(impl: PostRepositoryImpl): PostRepository = impl
+
+    @Provides
+    @Named(FavoriteRepositoryImpl.NAME)
+    fun favoritePreferences(context: Context): SharedPreferences =
+        context.getSharedPreferences(FavoriteRepositoryImpl.NAME, Context.MODE_PRIVATE)
+
+    @Provides
+    fun provideUserRepository(impl: UserRepositoryImpl): UserRepository = impl
+
+    @Provides
+    @Named(UserRepositoryImpl.NAME)
+    fun userPreferences(context: Context): SharedPreferences =
+        context.getSharedPreferences(UserRepositoryImpl.NAME, Context.MODE_PRIVATE)
+}
+
+class PostsActivity : AppCompatActivity(), PostsView {
+
+    @Suppress("Deprecated")
+    private val progressDialog: ProgressDialog by lazy {
+        ProgressDialog(this).apply {
+            setMessage(context.getString(R.string.progress_loading))
+            setCancelable(false)
+        }
+    }
+
+
+    @Inject
+    lateinit var presenter: PostsPresenter
+
+    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_all -> {
+                presenter.onAllClicked()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favorites -> {
+                presenter.onFavoriteClicked()
                 return@OnNavigationItemSelectedListener true
             }
         }
         false
     }
 
+    private val postsAdapter: PostsAdapter by lazy {
+        PostsAdapter()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_posts)
 
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        DaggerPostsComponent.builder()
+            .serviceApiComponent(DaggerServiceApiComponent.create())
+            .contextModule(ContextModule(applicationContext))
+            .postsModule(PostsModule(this))
+            .build()
+            .inject(this)
+
+        navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+        if (savedInstanceState == null) {
+            navigation.selectedItemId = R.id.navigation_all
+        }
+
+        val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        postsRecyclerView.layoutManager = linearLayoutManager
+
+        postsRecyclerView.adapter = postsAdapter
+        postsRecyclerView.addItemDecoration(
+            DividerItemDecoration(this, linearLayoutManager.orientation)
+        )
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        navigation.selectedItemId = navigation.selectedItemId
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter.start()
+    }
+
+    override fun onPause() {
+        presenter.stop()
+        super.onPause()
+    }
+
+    override fun showPosts(posts: List<PresentationPost>) {
+        postsAdapter.items = posts
+    }
+
+    override fun showLoadPostsError() {
+        Snackbar.make(container, R.string.posts_loading_error_message, Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun showProgress() {
+        progressDialog.show()
+    }
+
+    override fun hideProgress() {
+        progressDialog.hide()
+    }
+
+    override fun navigateToLogin() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun navigateToComments(postId: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.logout_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.logoutAction) {
+            presenter.onLogoutClicked()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

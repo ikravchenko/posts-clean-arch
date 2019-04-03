@@ -15,36 +15,40 @@ class GetFavoritePostsUseCaseTest : StringSpec() {
     init {
         "gets empty favorite posts if there are no favorites" {
             val getAllPostsUseCase = mock<GetAllPostsUseCase> {
-                on { execute(any()) } doReturn Single.just(listOf(
-                    Post(userId = 1, id = 1, title = "Title", body = "Body", favorite = false),
-                    Post(userId = 1, id = 2, title = "Title1", body = "Body1", favorite = false)
-                ))
+                on { execute() } doReturn Single.just(
+                    listOf(
+                        Post(userId = 1, id = 1, title = "Title", body = "Body", favorite = false),
+                        Post(userId = 1, id = 2, title = "Title1", body = "Body1", favorite = false)
+                    )
+                )
             }
             GetFavoritePostsUseCase(getAllPostsUseCase = getAllPostsUseCase)
-                .execute(GetFavoritePostsUseCase.InParams(userId = 1))
+                .execute()
                 .test()
                 .assertNoErrors()
                 .assertComplete()
                 .assertValue(emptyList())
 
-            verify(getAllPostsUseCase).execute(GetAllPostsUseCase.InParams(userId = 1))
+            verify(getAllPostsUseCase).execute()
         }
 
         "gets favorite posts if there are saved favorites" {
             val getAllPostsUseCase = mock<GetAllPostsUseCase> {
-                on { execute(any()) } doReturn Single.just(listOf(
-                    Post(userId = 1, id = 1, title = "Title", body = "Body", favorite = true),
-                    Post(userId = 1, id = 2, title = "Title1", body = "Body1", favorite = false)
-                ))
+                on { execute() } doReturn Single.just(
+                    listOf(
+                        Post(userId = 1, id = 1, title = "Title", body = "Body", favorite = true),
+                        Post(userId = 1, id = 2, title = "Title1", body = "Body1", favorite = false)
+                    )
+                )
             }
             GetFavoritePostsUseCase(getAllPostsUseCase = getAllPostsUseCase)
-                .execute(GetFavoritePostsUseCase.InParams(userId = 1))
+                .execute()
                 .test()
                 .assertNoErrors()
                 .assertComplete()
                 .assertValue(listOf(Post(userId = 1, id = 1, title = "Title", body = "Body", favorite = true)))
 
-            verify(getAllPostsUseCase).execute(GetAllPostsUseCase.InParams(userId = 1))
+            verify(getAllPostsUseCase).execute()
         }
     }
 }

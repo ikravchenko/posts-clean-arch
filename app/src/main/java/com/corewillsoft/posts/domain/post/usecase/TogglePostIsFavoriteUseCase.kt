@@ -9,10 +9,11 @@ import javax.inject.Inject
 class TogglePostIsFavoriteUseCase @Inject constructor(private val repository: FavoriteRepository): UseCase<Post, Completable> {
 
     override fun execute(param: Post): Completable {
-        return if (param.favorite) {
+        if (param.favorite) {
             repository.removePostId(param.id)
         } else {
             repository.addPostId(param.id)
         }
+        return Completable.complete()
     }
 }

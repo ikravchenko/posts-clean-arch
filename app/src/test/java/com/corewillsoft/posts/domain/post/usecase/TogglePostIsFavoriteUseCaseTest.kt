@@ -13,10 +13,7 @@ class TogglePostIsFavoriteUseCaseTest : StringSpec() {
 
     init {
 
-        val repository = mock<FavoriteRepository> {
-            on { addPostId(any()) } doReturn Completable.complete()
-            on { removePostId(any()) } doReturn Completable.complete()
-        }
+        val repository = mock<FavoriteRepository>()
         val useCase = TogglePostIsFavoriteUseCase(repository = repository)
 
         "removes post from favorites if post is favorite" {
