@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Posts</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_all">All</string>
+    <string name="title_favorites">Favorites</string>
+    <string name="login_user_id_hint">User ID:</string>
+    <string name="login_button_title">Login</string>
 </resources>
