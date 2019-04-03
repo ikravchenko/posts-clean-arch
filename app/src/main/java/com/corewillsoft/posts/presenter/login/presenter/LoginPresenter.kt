@@ -44,6 +44,8 @@ class LoginPresenterImpl @Inject constructor(
             disposables += interactor.login(id)
                 .subscribeBy(onComplete = {
                     view.navigateToPosts()
+                }, onError = {
+                    //do nothing
                 })
         }
     }
